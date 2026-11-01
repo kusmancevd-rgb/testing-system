@@ -1,0 +1,195 @@
+/* ============================================================= */
+/*  ДИЗАЙН СТРАНИЦЫ РЕГИСТРАЦИИ (в стиле login / test_creation)   */
+/* ============================================================= */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* ---------- Базовая типографика и фон ---------- */
+body {
+    font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #eef2f7 0%, #dfe7f1 100%);
+    margin: 0;
+    padding: 60px 20px;
+    min-height: 100vh;
+    color: #2c3e50;
+    font-size: 15px;
+}
+
+/* ---------- Общие свойства для обеих карточек ---------- */
+body > div {
+    max-width: 420px;
+    margin: 0 auto 22px;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 26px 30px;
+    box-shadow: 0 4px 14px rgba(44, 62, 80, 0.08),
+                0 1px 3px rgba(44, 62, 80, 0.06);
+    border: 1px solid #e6ecf3;
+    transition: box-shadow 0.25s ease;
+}
+
+body > div:hover {
+    box-shadow: 0 8px 24px rgba(44, 62, 80, 0.13),
+                0 2px 6px rgba(44, 62, 80, 0.08);
+}
+
+/* ---------- Верхняя карточка с заголовком ---------- */
+body > div:first-child {
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+body > div:first-child p {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #2c3e50;
+    line-height: 1.3;
+}
+
+/* ---------- Поля ввода ---------- */
+.username,
+.password,
+.repeatpassword,
+.selectrole,
+.name,
+.familia {
+    display: block;
+    width: 100%;
+    font-family: inherit;
+    font-size: 15px;
+    color: #2c3e50;
+    background: #f7f9fc;
+    border: 1.5px solid #dbe3ec;
+    border-radius: 8px;
+    padding: 10px 14px;
+    outline: none;
+    margin-bottom: 12px;
+    transition: border-color 0.2s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+.username:hover,
+.password:hover,
+.repeatpassword:hover,
+.selectrole:hover,
+.name:hover,
+.familia:hover {
+    border-color: #b9c8d9;
+    background: #ffffff;
+}
+
+.username:focus,
+.password:focus,
+.repeatpassword:focus,
+.selectrole:focus,
+.name:focus,
+.familia:focus {
+    border-color: #5b9bd5;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(91, 155, 213, 0.18);
+}
+
+/* ---------- Селект «Роль» ---------- */
+.selectrole {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%237a8a9b' d='M6 8L0 0h12z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+}
+
+/* ---------- Скрываем <br> — поля теперь block ---------- */
+body > div br {
+    display: none;
+}
+
+/* ---------- Кнопка «Зарегистрироваться» ---------- */
+.submit {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px 20px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(180deg, #58b98b 0%, #3f9d70 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(63, 157, 112, 0.4);
+    transition: background 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.1s ease;
+}
+
+.submit:hover {
+    background: linear-gradient(180deg, #4caf7d 0%, #369063 100%);
+    box-shadow: 0 5px 16px rgba(63, 157, 112, 0.5);
+}
+
+.submit:active {
+    transform: translateY(1px) scale(0.99);
+    box-shadow: 0 1px 3px rgba(63, 157, 112, 0.4);
+}
+
+.submit:focus-visible {
+    outline: 3px solid rgba(88, 185, 139, 0.4);
+    outline-offset: 2px;
+}
+
+/* ---------- Ссылка «Войти» ---------- */
+.login {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: #4f92cf;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.login:hover {
+    color: #2f5a86;
+    text-decoration: underline;
+}
+
+.login:active {
+    color: #1e3d5c;
+}
+
+/* ---------- Сообщение об ошибке ----------
+   JS вставляет <p class="errormessage"> ПЕРЕД кнопкой (beforebegin) */
+.errormessage {
+    margin: 0 0 12px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #a12b1e;
+    background: #fdecea;
+    border: 1.5px solid #f3c1bb;
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* ---------- Адаптив ---------- */
+@media (max-width: 480px) {
+    body {
+        padding: 30px 14px;
+    }
+
+    body > div {
+        padding: 20px 18px;
+    }
+
+    body > div:first-child p {
+        font-size: 18px;
+    }
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/test_creation/test_creation.css">
+</head>
+<body>
+    <a class="name">{{ name }}</a>
+    <br>
+    <input class="test_name_input">
+    <br>
+    <input class="test_description_input">
+    <br>
+
+    <div class="questions">
+        <div>
+            <span class="number" id="number-1">1.</span>
+            <input class="question" id="question-1" value="1">
+            <label for="addimage-1" id="label-1">Выберите файл</label>
+            <input type="file" id="addimage-1" class="addimage" accept="image/*">
+            <button class="delquestion" id="delquestion-1"><img src="/static/test_creation/trashbin.png"></button>
+            <input class="max_score" id="max_score-1" value="1">
+            <br>
+            <input type="checkbox" id="check-1-1" class="answercheck">
+            <input class="answer" id="answer-1-1" value="1-1">
+            <button class="delanswer" id="delanswer-1-1"><img src="/static/test_creation/trashbin.png"></button>
+            <br>
+            <input type="checkbox" id="check-1-2" class="answercheck">
+            <input class="answer" id="answer-1-2" value="1-2">
+            <button class="delanswer" id="delanswer-1-2"><img src="/static/test_creation/trashbin.png"></button>
+            <br>
+            <button class="addanswer" id="addanswer-1">Добавить ответ</button>
+        </div>
+    </div>
+    
+    <button class="addquestion">Добавить восрос</button>
+    <button class="submittest">Выложить тест</button>
+    <script src="/static/test_creation/test_creation.js"></script>
+</body>
+</html>

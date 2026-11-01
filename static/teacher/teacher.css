@@ -1,0 +1,179 @@
+/* ============================================================= */
+/*  ДИЗАЙН СТРАНИЦЫ УЧИТЕЛЯ (в стиле проекта)                    */
+/* ============================================================= */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* ---------- Базовая типографика и фон ---------- */
+body {
+    font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #eef2f7 0%, #dfe7f1 100%);
+    margin: 0;
+    padding: 80px 20px 40px; /* Сверху больше отступа для плашки с именем */
+    min-height: 100vh;
+    color: #2c3e50;
+    font-size: 15px;
+    
+    /* Центрируем контент */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ---------- Имя пользователя (Правый верхний угол) ---------- */
+.name {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: inline-block;
+    padding: 10px 20px;
+    background: #ffffff;
+    color: #4f92cf;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    border-radius: 30px;
+    box-shadow: 0 4px 14px rgba(44, 62, 80, 0.08), 0 1px 3px rgba(44, 62, 80, 0.06);
+    border: 1px solid #e6ecf3;
+    transition: box-shadow 0.2s ease, color 0.2s ease, transform 0.1s ease;
+    z-index: 100;
+}
+
+.name:hover {
+    color: #2f5a86;
+    box-shadow: 0 6px 20px rgba(44, 62, 80, 0.12), 0 2px 6px rgba(44, 62, 80, 0.08);
+    transform: translateY(-1px);
+}
+
+/* ---------- Общие настройки ширины для контента ---------- */
+body > p, 
+.create_test, 
+.my_tests {
+    width: 100%;
+    max-width: 820px; /* Ширина как у карточек вопросов */
+}
+
+/* ---------- Приветствие ---------- */
+body > p:first-of-type {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 24px 0;
+}
+
+/* ---------- Заголовок "Мои тесты" ---------- */
+body > p:last-of-type {
+    font-size: 18px;
+    font-weight: 600;
+    color: #5b7a9b;
+    margin: 40px 0 16px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #dbe3ec;
+}
+
+/* ---------- Кнопка "Создать тест" ---------- */
+.create_test {
+    display: block;
+    width: auto;
+    align-self: center; /* ИЗМЕНЕНО: кнопка теперь по центру */
+    padding: 12px 32px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(180deg, #58b98b 0%, #3f9d70 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(63, 157, 112, 0.4);
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+    margin-bottom: 10px;
+}
+
+.create_test:hover {
+    background: linear-gradient(180deg, #4caf7d 0%, #369063 100%);
+    box-shadow: 0 5px 16px rgba(63, 157, 112, 0.5);
+}
+
+.create_test:active {
+    transform: translateY(1px) scale(0.99);
+    box-shadow: 0 1px 3px rgba(63, 157, 112, 0.4);
+}
+
+.create_test:focus-visible {
+    outline: 3px solid rgba(88, 185, 139, 0.4);
+    outline-offset: 2px;
+}
+
+/* ---------- Контейнер со списком тестов ---------- */
+.my_tests {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ---------- Карточка теста (создается в JS) ---------- */
+.my_tests > div {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 20px 24px;
+    box-shadow: 0 4px 14px rgba(44, 62, 80, 0.08), 0 1px 3px rgba(44, 62, 80, 0.06);
+    border: 1px solid #e6ecf3;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+    line-height: 1.6;
+    color: #2c3e50;
+}
+
+.my_tests > div:hover {
+    box-shadow: 0 8px 24px rgba(44, 62, 80, 0.13), 0 2px 6px rgba(44, 62, 80, 0.08);
+    transform: translateY(-2px);
+}
+
+/* Оформление текста внутри карточки (Название, Описание, Дата) */
+.my_tests > div {
+    /* Название — первая строка */
+    font-size: 15px;
+}
+/* Если хочешь выделить название, в JS лучше обернуть его в <span> или <b>,
+   но раз в JS просто текст с <br>, сделаем аккуратные отступы */
+.my_tests > div br {
+    content: "";
+    margin: 6px 0;
+    display: block;
+}
+
+/* ---------- Если тестов нет (НОВЫЙ КЛАСС ИЗ JS) ---------- */
+.my_tests > .no_tests {
+    color: #7a8a9b;
+    font-style: italic;
+    text-align: center;
+    border: 1px dashed #c9d9ea; /* Рамка пунктиром */
+    box-shadow: none;           /* Убираем тень обычной карточки */
+    background: #ffffff;
+}
+
+/* Убираем эффект наведения для пустого списка, чтобы не было ложного клика */
+.my_tests > .no_tests:hover {
+    box-shadow: none;
+    transform: none;
+}
+
+/* ---------- Адаптив для мобилок ---------- */
+@media (max-width: 640px) {
+    body {
+        padding: 70px 16px 30px;
+    }
+
+    .name {
+        top: 15px;
+        right: 15px;
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    body > p:first-of-type {
+        font-size: 20px;
+    }
+}
