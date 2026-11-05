@@ -1,0 +1,181 @@
+/* ============================================================= */
+/*  ДИЗАЙН СТРАНИЦЫ СТАТИСТИКИ ТЕСТА                             */
+/* ============================================================= */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* ---------- Базовая типографика и фон ---------- */
+body {
+    font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #eef2f7 0%, #dfe7f1 100%);
+    margin: 0;
+    padding: 80px 20px 40px;
+    min-height: 100vh;
+    color: #2c3e50;
+    font-size: 15px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ---------- Имя пользователя (Правый верхний угол) ---------- */
+.name {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: inline-block;
+    padding: 10px 20px;
+    background: #ffffff;
+    color: #4f92cf;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    border-radius: 30px;
+    box-shadow: 0 4px 14px rgba(44, 62, 80, 0.08), 0 1px 3px rgba(44, 62, 80, 0.06);
+    border: 1px solid #e6ecf3;
+    transition: box-shadow 0.2s ease, color 0.2s ease, transform 0.1s ease;
+    z-index: 100;
+}
+
+.name:hover {
+    color: #2f5a86;
+    box-shadow: 0 6px 20px rgba(44, 62, 80, 0.12), 0 2px 6px rgba(44, 62, 80, 0.08);
+    transform: translateY(-1px);
+}
+
+/* ---------- Заголовок с названием теста (Span + Ссылка) ---------- */
+.test_name {
+    display: block;
+    font-size: 24px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 30px 0;
+    text-align: center;
+}
+
+/* Стили для ссылки внутри заголовка */
+.test_name a {
+    color: #4f92cf;
+    text-decoration: none;
+    border-bottom: 2px dashed #b9c8d9; /* Пунктирное подчеркивание, намекающее на ссылку */
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.test_name a:hover {
+    color: #2f5a86;
+    border-bottom: 2px solid #2f5a86; /* При наведении становится сплошной */
+}
+
+/* ---------- Контейнер для таблицы (Карточка) ---------- */
+.solutions {
+    width: 100%;
+    max-width: 820px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(44, 62, 80, 0.08),
+                0 1px 3px rgba(44, 62, 80, 0.06);
+    border: 1px solid #e6ecf3;
+    overflow: hidden; 
+    text-align: center; 
+    padding: 20px 0;
+}
+
+/* Если в контейнере есть таблица, убираем лишние отступы */
+.solutions:has(table) {
+    padding: 0;
+    text-align: left;
+}
+
+/* ---------- Таблица ---------- */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    border: none; 
+}
+
+/* ---------- Ячейки таблицы ---------- */
+.table th,
+.table td {
+    padding: 16px 24px;
+    border: none;
+    border-bottom: 1px solid #e6ecf3; 
+    color: #2c3e50;
+    font-size: 15px;
+    vertical-align: middle;
+}
+
+/* ---------- Шапка таблицы ---------- */
+.table th {
+    background: #f7f9fc; 
+    font-weight: 600;
+    color: #5b7a9b;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: left;
+}
+
+/* Убираем нижнюю линию у самой последней строки */
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+/* ---------- Строки таблицы (Эффект наведения) ---------- */
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #fcfdfe; 
+}
+
+/* ---------- Ссылка на имя ученика ---------- */
+.table td a {
+    color: #4f92cf;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.table td a:hover {
+    color: #2f5a86;
+    text-decoration: underline;
+}
+
+/* ---------- Если решений нет ---------- */
+.solutions:not(:has(table)) {
+    color: #7a8a9b;
+    font-style: italic;
+    font-size: 16px;
+}
+
+/* ---------- Адаптив для мобилок ---------- */
+@media (max-width: 640px) {
+    body {
+        padding: 70px 16px 30px;
+    }
+
+    .name {
+        top: 15px;
+        right: 15px;
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    .test_name {
+        font-size: 20px;
+    }
+
+    .table th,
+    .table td {
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+    
+    .solutions {
+        overflow-x: auto;
+    }
+}

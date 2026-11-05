@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_from_directory
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user
 from datetime import datetime
-from database import *
+from utils import *
 
 
 app = Flask(__name__)
@@ -154,9 +154,12 @@ def test_stats(test_id):
         return "No permission"
 
     if request.method == 'GET':
-        test_info = load_param_of_test(test_id)
+        test_info = get_param_of_test(test_id)
         test_name = test_info[3]
-        return render_template('test_stats.html', name=f"{current_user.familia.capitalize()} {current_user.name[0].upper()}", test_name=test_name)
+        return render_template('test_stats.html',
+                               name=f"{current_user.familia.capitalize()} {current_user.name[0].upper()}",
+                               test_id=test_info[0],
+                               test_name=test_name)
 
     if request.method == 'POST':
         req = request.get_json()
@@ -174,13 +177,14 @@ def solution(solution_id):
         return "NO PERMISSION"
 
     if request.method == 'GET':
-        test_info = load_param_of_test(get_test_id(solution_id))
+        test_info = get_param_of_test(get_info_of_solution(solution_id)[1])
         test_name = test_info[3]
         solution_info = get_info_of_solution(solution_id)
         return render_template('solution.html',
                                name=f"{current_user.familia.capitalize()} {current_user.name[0].upper()}",
                                test_name=test_name,
                                student_name=get_user(solution_info[2])[3] + " " + get_user(solution_info[2])[4],
+                               test_id=solution_info[1],
                                cheated_chance=solution_info[5],
                                time=solution_info[4],
                                mark=calculate_mark_of_solution_by_id(solution_id))
@@ -190,6 +194,36 @@ def solution(solution_id):
         if req['type'] == 'get_answers':
             answers = get_answers(solution_id)
             return jsonify({'type': 'success', 'answers': answers})
+
+
+@app.route('/teacher/test/<test_id>', methods=['GET', 'POST'])
+@login_required
+def teacher_test(test_id):
+    if current_user.role != 'teacher':
+        return "NO PERMISSION"
+    if get_param_of_test(test_id)[1] != current_user.username:
+        return "No Permission"
+
+    if request.method == 'GET':
+        test_info = get_param_of_test(test_id)
+
+        name = test_info[3]
+        description = test_info[4]
+        time = test_info[5]
+
+        return render_template('test_for_teacher.html',
+                               name=f"{current_user.familia.capitalize()} {current_user.name[0].upper()}",
+                               test_name=name,
+                               test_description=description,
+                               time=time)
+
+    if request.method == 'POST':
+        req = request.get_json()
+
+        if req['type'] == 'get_test_info':
+            test_info = get_param_of_test(test_id)[5]
+
+            return jsonify({'type': 'success', 'test': test_info})
 
 
 app.run()

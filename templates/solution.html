@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/solution/solution.css">
     <title>Document</title>
 </head>
 <body>
     <a class="name">{{ name }}</a>
     <br>
-    <p class="test_name">{{ "Тест " + test_name }}</p>
+    <span class="test_name">{{ "Тест " }}
+    <a href="/teacher/test/{{ test_id }}"> {{ test_name }}
+    </a>
+    </span>
     <br>
 
     <p class="student_name">Решение ученика {{ student_name }}</p>

@@ -11,7 +11,7 @@ body {
     font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
     background: linear-gradient(135deg, #eef2f7 0%, #dfe7f1 100%);
     margin: 0;
-    padding: 80px 20px 40px; /* Сверху больше отступа для плашки с именем */
+    padding: 80px 20px 40px; /* Сверху отступ для плашки с именем */
     min-height: 100vh;
     color: #2c3e50;
     font-size: 15px;
@@ -52,7 +52,7 @@ body > p,
 .create_test, 
 .my_tests {
     width: 100%;
-    max-width: 820px; /* Ширина как у карточек вопросов */
+    max-width: 820px; /* Ширина как у карточек */
 }
 
 /* ---------- Приветствие ---------- */
@@ -77,7 +77,7 @@ body > p:last-of-type {
 .create_test {
     display: block;
     width: auto;
-    align-self: center; /* ИЗМЕНЕНО: кнопка теперь по центру */
+    align-self: center; 
     padding: 12px 32px;
     font-family: inherit;
     font-size: 15px;
@@ -114,50 +114,59 @@ body > p:last-of-type {
     gap: 16px;
 }
 
-/* ---------- Карточка теста (создается в JS) ---------- */
-.my_tests > div {
+/* ============================================================= */
+/*  СТИЛИ ДЛЯ КАРТОЧЕК-ССЫЛОК                                    */
+/* ============================================================= */
+
+/* Обертка-ссылка (убираем стандартные стили ссылок) */
+.my_tests > a {
+    display: block;
+    text-decoration: none;
+    color: inherit; /* Текст наследует цвет проекта */
+    outline: none;
+}
+
+/* Сама белая карточка внутри ссылки */
+.my_tests > a > div {
     background: #ffffff;
     border-radius: 14px;
     padding: 20px 24px;
     box-shadow: 0 4px 14px rgba(44, 62, 80, 0.08), 0 1px 3px rgba(44, 62, 80, 0.06);
     border: 1px solid #e6ecf3;
-    transition: box-shadow 0.25s ease, transform 0.25s ease;
+    transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
     line-height: 1.6;
     color: #2c3e50;
 }
 
-.my_tests > div:hover {
+/* Эффект при наведении на карточку */
+.my_tests > a:hover > div {
     box-shadow: 0 8px 24px rgba(44, 62, 80, 0.13), 0 2px 6px rgba(44, 62, 80, 0.08);
     transform: translateY(-2px);
+    border-color: #b9c8d9;
+    cursor: pointer;
 }
 
-/* Оформление текста внутри карточки (Название, Описание, Дата) */
-.my_tests > div {
-    /* Название — первая строка */
-    font-size: 15px;
-}
-/* Если хочешь выделить название, в JS лучше обернуть его в <span> или <b>,
-   но раз в JS просто текст с <br>, сделаем аккуратные отступы */
-.my_tests > div br {
-    content: "";
-    margin: 6px 0;
+/* Красиво оформляем текст внутри карточки */
+.my_tests > a > div br {
     display: block;
+    content: "";
+    margin-top: 4px;
 }
 
-/* ---------- Если тестов нет (НОВЫЙ КЛАСС ИЗ JS) ---------- */
+/* (Опционально) Можно сделать первую строку (название) жирной, 
+   используя псевдоэлемент, но лучше это сделать в JS через <span>. 
+   Пока просто зададим базовые стили */
+
+/* ---------- Заглушка, если тестов нет ---------- */
 .my_tests > .no_tests {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 30px;
+    text-align: center;
     color: #7a8a9b;
     font-style: italic;
-    text-align: center;
-    border: 1px dashed #c9d9ea; /* Рамка пунктиром */
-    box-shadow: none;           /* Убираем тень обычной карточки */
-    background: #ffffff;
-}
-
-/* Убираем эффект наведения для пустого списка, чтобы не было ложного клика */
-.my_tests > .no_tests:hover {
+    border: 1px dashed #c9d9ea;
     box-shadow: none;
-    transform: none;
 }
 
 /* ---------- Адаптив для мобилок ---------- */
@@ -175,5 +184,9 @@ body > p:last-of-type {
 
     body > p:first-of-type {
         font-size: 20px;
+    }
+
+    .my_tests > a > div {
+        padding: 16px 20px;
     }
 }

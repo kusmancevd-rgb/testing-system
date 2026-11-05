@@ -12,7 +12,7 @@ async function loadMyTests() {
     let s = '';
 
     for (let test of resp) {
-        s += `<div><a href='/teacher/test_stats/${test['id']}'>${test['name']}<br>${test['description']}<br>${test['date_of_creation']}</a></div>`;
+        s += `<a href='/teacher/test_stats/${test['id']}'><div>${test['name']}<br>${test['description']}<br>${test['date_of_creation']}</div></a>`;
     }
 
     if (resp.length == 0) {
