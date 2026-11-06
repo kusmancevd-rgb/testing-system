@@ -138,3 +138,25 @@ def get_solution_info_by_test_id(test_id):
     conn.close()
 
     return res
+
+
+def student_already_passed_test(username, test_id):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    res = cursor.execute('SELECT * FROM test_solved_by_student WHERE student_id=? and test_id=?', (username, test_id)).fetchall()
+
+    conn.close()
+
+    return len(res) > 0
+
+
+def test_id_is_valid(test_id):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    res = cursor.execute('SELECT * FROM test WHERE id=?', (test_id, )).fetchall()
+
+    conn.close()
+
+    return len(res) > 0

@@ -5,7 +5,7 @@ from utils import *
 
 
 app = Flask(__name__)
-app.secret_key = 'ddddffcfssgdddgddddfoddcoddddgddd'
+app.secret_key = 'ddddffcfssssgdddgddddfoddcoddddgddd'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -224,7 +224,22 @@ def student_page():
         return "No permission"
 
     if request.method == 'GET':
-        return render_template('student.html')
+        return render_template('student.html',
+                               name=f"{current_user.familia.capitalize()} {current_user.name[0].upper()}")
+
+    if request.method == 'POST':
+        req = request.get_json()
+
+        if req['type'] == 'load_test':
+            test_id = req['id']
+
+            if student_already_passed_test(current_user.username, test_id):
+                return jsonify({'type': 'alreadyCompleted'})
+
+            if not test_id_is_valid(test_id):
+                return jsonify({'type': 'nan'})
+
+            return jsonify({'type': 'success', 'url': '/student/test'})
 
 
 app.run()

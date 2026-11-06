@@ -2,7 +2,7 @@ from database import *
 import json
 
 
-'''По большей части преобразование результатов запроса в БД в json'''
+'''По большей части преобразование результатов запроса к БД в json'''
 
 
 def load_solutions(test_id):
