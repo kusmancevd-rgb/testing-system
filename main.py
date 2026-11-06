@@ -114,17 +114,8 @@ def teacher_page():
     if request.method == 'POST':
         req = request.get_json()
         if req['type'] == 'get_my_tests':
-            tests = load_params_of_test_created_by_username(current_user.username, 'name', 'description', 'date_of_creation', 'id')
+            tests = get_param_of_test_created_by_username(current_user.username, 'name', 'description', 'date_of_creation', 'id')
             return jsonify(tests)
-
-
-@app.route('/student', methods=['GET', 'POST'])
-@login_required
-def student_page():
-    if request.method == 'GET':
-        if current_user.role != 'student':
-            return "No permission"
-        return render_template('student.html')
 
 
 @app.route('/teacher/create_test', methods=['GET', 'POST'])
@@ -224,6 +215,16 @@ def teacher_test(test_id):
             test_info = get_param_of_test(test_id)[5]
 
             return jsonify({'type': 'success', 'test': test_info})
+
+
+@app.route('/student', methods=['GET', 'POST'])
+@login_required
+def student_page():
+    if current_user.role != 'student':
+        return "No permission"
+
+    if request.method == 'GET':
+        return render_template('student.html')
 
 
 app.run()

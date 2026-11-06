@@ -2,6 +2,54 @@ import sqlite3
 import json
 
 
+def create_tables():
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    conn.execute("PRAGMA foreign_keys = ON")
+
+    cursor.execute('''
+                   CREATE TABLE IF NOT EXISTS user
+                   (
+                       username TEXT PRIMARY KEY,
+                       password TEXT,
+                       role     TEXT,
+                       name     TEXT,
+                       familia  TEXT
+                   )
+                   ''')
+
+    cursor.execute('''
+                   CREATE TABLE IF NOT EXISTS test
+                   (
+                       id                  INTEGER PRIMARY KEY,
+                       username_of_creator TEXT REFERENCES user (username),
+                       date_of_creation    TEXT,
+                       name                TEXT,
+                       description         TEXT,
+                       questions           TEXT
+                   )
+                   ''')
+
+    cursor.execute('''
+                   CREATE TABLE IF NOT EXISTS test_solved_by_student
+                   (
+                       id             INTEGER PRIMARY KEY,
+                       test_id        INTEGER REFERENCES test(id),
+                       student_id     TEXT REFERENCES user (username),
+                       solution       TEXT,
+                       time           INTEGER,
+                       cheated_chance REAL
+                   )
+                   ''')
+
+    conn.commit()
+    conn.close()
+
+
+create_tables()
+
+
 def get_user(username):
     conn = sqlite3.connect('db.sqlite3')
     cursor = conn.cursor()
@@ -28,14 +76,7 @@ def load_params_of_test_created_by_username(username, *params):
     resp = cursor.execute(f'SELECT {", ".join(params)} FROM test where username_of_creator=?', (username, )).fetchall()
     conn.close()
 
-    # Преобразование [(..., ..., ...), (..., ..., ...)] в [{name: ..., description: ..., date: ...}, {...}]
-    lst = []
-    for i in range(len(resp)):
-        lst.append({})
-        for j in range(len(params)):
-            lst[i][params[j]] = resp[i][j]
-
-    return lst
+    return resp
 
 
 def add_test_to_db(dct, username, date):

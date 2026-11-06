@@ -2,6 +2,9 @@ from database import *
 import json
 
 
+'''По большей части преобразование результатов запроса в БД в json'''
+
+
 def load_solutions(test_id):
     '''
     test_id -> [{name:, mark:, cheated_chance:, time:}, {}, ...]
@@ -139,3 +142,17 @@ def calculate_mark_of_solution_by_id(solution_id):
     test_id = res[1]
 
     return calculate_mark(solution, test_id)
+
+
+def get_param_of_test_created_by_username(username, *params):
+    # Преобразование [(..., ..., ...), (..., ..., ...)] в [{name: ..., description: ..., date: ...}, {...}]
+
+    resp = load_params_of_test_created_by_username(username, *params)
+
+    lst = []
+    for i in range(len(resp)):
+        lst.append({})
+        for j in range(len(params)):
+            lst[i][params[j]] = resp[i][j]
+
+    return lst

@@ -1,0 +1,30 @@
+# Virtual Environment (Забудь про папку .venv)
+.venv/
+venv/
+env/
+
+# PyCharm settings
+.idea/
+*.iml
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Flask instance folder (if you use it)
+instance/
+
+# Database (Самое важное! Не коммить базу данных)
+*.sqlite3
+db.sqlite3
+*.db
+
+# Environment variables (secrets, keys)
+.env
+.env.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+*.log
