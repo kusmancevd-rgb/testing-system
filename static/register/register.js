@@ -6,6 +6,7 @@ async function setRegisterData() {
         'name': document.querySelector('.name').value,
         'familia': document.querySelector('.familia').value,
         'role': document.querySelector('.selectrole').value,
+        'grade': document.querySelector('.class')?.value
     };
     obj = JSON.stringify(obj);
 
@@ -42,4 +43,26 @@ async function setRegisterData() {
 }
 
 
+function changeRole(role) {
+    if (role == 'teacher') {
+        let class_input = document.querySelector('.class');
+        if (class_input) {
+            class_input.remove();
+        }
+    }
+
+    if (role == 'student') {
+        let prev_class_input = document.querySelector('.class');
+        if (prev_class_input) {
+            prev_class_input.remove();
+        }
+        let oporni_elem = document.querySelector('.familia').nextElementSibling;
+        oporni_elem.insertAdjacentHTML('afterend',
+            `<input class='class'>`
+        );
+    }
+}
+
+
 document.querySelector('.submit').addEventListener('click', setRegisterData);
+document.querySelector('.selectrole').addEventListener('change', (event) => changeRole(event.target.value));

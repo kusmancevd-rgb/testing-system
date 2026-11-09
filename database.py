@@ -15,7 +15,8 @@ def create_tables():
                        password TEXT,
                        role     TEXT,
                        name     TEXT,
-                       familia  TEXT
+                       familia  TEXT,
+                       grade TEXT
                    )
                    ''')
 
@@ -27,7 +28,8 @@ def create_tables():
                        date_of_creation    TEXT,
                        name                TEXT,
                        description         TEXT,
-                       questions           TEXT
+                       questions           TEXT,
+                       max_time INTEGER
                    )
                    ''')
 
@@ -40,6 +42,16 @@ def create_tables():
                        solution       TEXT,
                        time           INTEGER,
                        cheated_chance REAL
+                   )
+                   ''')
+
+    cursor.execute('''
+                   CREATE TABLE IF NOT EXISTS test_started_by_student
+                   (
+                       id             INTEGER PRIMARY KEY,
+                       test_id        INTEGER REFERENCES test (id),
+                       student_id     TEXT REFERENCES user (username),
+                       time TEXT
                    )
                    ''')
 
@@ -58,11 +70,11 @@ def get_user(username):
     return resp
 
 
-def insert_user(username, password, role, name, familia):
+def insert_user(username, password, role, name, familia, grade):
     conn = sqlite3.connect('db.sqlite3')
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO user (username, password, role, name, familia) '
-                   'VALUES (?, ?, ?, ?, ?)', (username, password, role, name, familia))
+    cursor.execute('INSERT INTO user (username, password, role, name, familia, grade) '
+                   'VALUES (?, ?, ?, ?, ?, ?)', (username, password, role, name, familia, grade))
     conn.commit()
     conn.close()
 
@@ -83,11 +95,12 @@ def add_test_to_db(dct, username, date):
     conn = sqlite3.connect('db.sqlite3')
     cursor = conn.cursor()
 
-    cursor.execute('INSERT INTO test (username_of_creator, date_of_creation, name, description, questions) VALUES (?, ?, ?, ?, ?)',
-                   (username, date.strftime('%Y-%m-%d %H%M'), dct['name'], dct['description'], json.dumps(dict(list(dct.items())[2:]))))
+    cursor.execute('INSERT INTO test (username_of_creator, date_of_creation, name, description, questions, max_time) VALUES (?, ?, ?, ?, ?, ?)',
+                   (username, date.strftime('%Y-%m-%d %H:%M:%S'), dct['name'], dct['description'], json.dumps(dict(list(dct.items())[3:])), dct['max_time']))
 
     conn.commit()
     conn.close()
+
 
 def get_param_of_test(id):
     conn = sqlite3.connect('db.sqlite3')
@@ -140,11 +153,11 @@ def get_solution_info_by_test_id(test_id):
     return res
 
 
-def student_already_passed_test(username, test_id):
+def student_already_started_test(username, test_id):
     conn = sqlite3.connect('db.sqlite3')
     cursor = conn.cursor()
 
-    res = cursor.execute('SELECT * FROM test_solved_by_student WHERE student_id=? and test_id=?', (username, test_id)).fetchall()
+    res = cursor.execute('SELECT * FROM test_started_by_student WHERE student_id=? and test_id=?', (username, test_id)).fetchall()
 
     conn.close()
 
@@ -156,6 +169,49 @@ def test_id_is_valid(test_id):
     cursor = conn.cursor()
 
     res = cursor.execute('SELECT * FROM test WHERE id=?', (test_id, )).fetchall()
+
+    conn.close()
+
+    return len(res) > 0
+
+
+def add_test_to_started(student_id, test_id, time):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    cursor.execute('INSERT INTO test_started_by_student (test_id, student_id, time) VALUES (?, ?, ?)', (test_id, student_id, time.strftime('%Y-%m-%d %H:%M:%S')))
+
+    conn.commit()
+    conn.close()
+
+
+def get_start_time(student_id, test_id):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    res = cursor.execute('SELECT * FROM test_started_by_student WHERE student_id=? and test_id=?', (student_id, test_id)).fetchone()
+
+    conn.close()
+    return res[3]
+
+
+def add_solution_to_db(student_id, test_id, solution, time, cheated_chance):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    cursor.execute('INSERT INTO test_solved_by_student (student_id, test_id, solution, time, cheated_chance)'
+                   'VALUES (?, ?, ?, ?, ?)',
+                   (student_id, test_id, solution, time, cheated_chance))
+
+    conn.commit()
+    conn.close()
+
+
+def student_already_completed_test(username, test_id):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    res = cursor.execute('SELECT * FROM test_solved_by_student WHERE student_id=? and test_id=?', (username, test_id)).fetchall()
 
     conn.close()
 

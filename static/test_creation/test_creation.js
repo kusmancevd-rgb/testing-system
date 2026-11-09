@@ -153,8 +153,15 @@ async function submitTest() {
     return;
   }
 
+  let time = document.querySelector('.time').value;
+  if (!/^[1-9]\d*$/.test(time)) {
+    alert("Выставите корректное время");
+    return;
+  }
+
   result['name'] = name;
   result['description'] = description;
+  result['max_time'] = time;
 
   for (let question of list_of_questions) {
     let id = list_of_questions.indexOf(question) + 1;

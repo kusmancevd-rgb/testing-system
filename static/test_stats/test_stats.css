@@ -46,27 +46,60 @@ body {
     transform: translateY(-1px);
 }
 
-/* ---------- Заголовок с названием теста (Span + Ссылка) ---------- */
+/* ---------- Заголовок с названием теста ---------- */
 .test_name {
     display: block;
     font-size: 24px;
     font-weight: 600;
     color: #2c3e50;
-    margin: 0 0 30px 0;
+    margin: 0 0 20px 0;
     text-align: center;
 }
 
-/* Стили для ссылки внутри заголовка */
 .test_name a {
     color: #4f92cf;
     text-decoration: none;
-    border-bottom: 2px dashed #b9c8d9; /* Пунктирное подчеркивание, намекающее на ссылку */
+    border-bottom: 2px dashed #b9c8d9;
     transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .test_name a:hover {
     color: #2f5a86;
-    border-bottom: 2px solid #2f5a86; /* При наведении становится сплошной */
+    border-bottom: 2px solid #2f5a86;
+}
+
+/* ---------- НОВОЕ: Фильтр по классам ---------- */
+.grade {
+    width: 100%;
+    max-width: 250px;
+    margin: 0 0 20px 0; /* Отступ снизу до таблицы */
+    padding: 10px 14px;
+    font-family: inherit;
+    font-size: 15px;
+    color: #2c3e50;
+    background-color: #ffffff;
+    border: 1.5px solid #dbe3ec;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    /* Та самая стрелочка, что и на других селектах */
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%237a8a9b' d='M6 8L0 0h12z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.grade:hover {
+    border-color: #b9c8d9;
+}
+
+.grade:focus {
+    border-color: #5b9bd5;
+    box-shadow: 0 0 0 3px rgba(91, 155, 213, 0.18);
 }
 
 /* ---------- Контейнер для таблицы (Карточка) ---------- */
@@ -83,7 +116,6 @@ body {
     padding: 20px 0;
 }
 
-/* Если в контейнере есть таблица, убираем лишние отступы */
 .solutions:has(table) {
     padding: 0;
     text-align: left;
@@ -96,7 +128,6 @@ body {
     border: none; 
 }
 
-/* ---------- Ячейки таблицы ---------- */
 .table th,
 .table td {
     padding: 16px 24px;
@@ -107,7 +138,6 @@ body {
     vertical-align: middle;
 }
 
-/* ---------- Шапка таблицы ---------- */
 .table th {
     background: #f7f9fc; 
     font-weight: 600;
@@ -118,12 +148,10 @@ body {
     text-align: left;
 }
 
-/* Убираем нижнюю линию у самой последней строки */
 .table tr:last-child td {
     border-bottom: none;
 }
 
-/* ---------- Строки таблицы (Эффект наведения) ---------- */
 .table tbody tr {
     transition: background-color 0.2s ease;
 }
@@ -132,7 +160,6 @@ body {
     background-color: #fcfdfe; 
 }
 
-/* ---------- Ссылка на имя ученика ---------- */
 .table td a {
     color: #4f92cf;
     text-decoration: none;
@@ -145,7 +172,6 @@ body {
     text-decoration: underline;
 }
 
-/* ---------- Если решений нет ---------- */
 .solutions:not(:has(table)) {
     color: #7a8a9b;
     font-style: italic;
@@ -167,6 +193,10 @@ body {
 
     .test_name {
         font-size: 20px;
+    }
+
+    .grade {
+        max-width: 100%; /* На телефоне селект на всю ширину */
     }
 
     .table th,

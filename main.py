@@ -5,19 +5,20 @@ from utils import *
 
 
 app = Flask(__name__)
-app.secret_key = 'ddddffcfssssgdddgddddfoddcoddddgddd'
+app.secret_key = 'ddsdsaddffssdcsddsdsafdfsacfsfdsfsdsfsdfssdssssdfdsssgdddgddddfoddsdccvc'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 
 
 class User(UserMixin):
-    def __init__(self, username, password, role, name, familia):
+    def __init__(self, username, password, role, name, familia, grade):
         self.username = username
         self.password = password
         self.role = role
         self.name = name
         self.familia = familia
+        self.grade = grade
 
     def get_id(self):
         return self.username
@@ -33,14 +34,15 @@ def load_user(username):
 
 @app.route('/', methods=['GET', 'POST'])
 def login_page():
-    if request.method == 'GET':
-        if not current_user.is_authenticated:
-            return render_template('login.html')
-
+    if current_user.is_authenticated:
         if current_user.role == 'teacher':
             return redirect(url_for('teacher_page'))
         if current_user.role == 'student':
             return redirect(url_for('student_page'))
+
+    if request.method == 'GET':
+        if not current_user.is_authenticated:
+            return render_template('login.html')
 
     if request.method == 'POST':
         data = request.get_json()
@@ -64,14 +66,15 @@ def login_page():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register_page():
-    if request.method == 'GET':
-        if not current_user.is_authenticated:
-            return render_template('register.html')
-
+    if current_user.is_authenticated:
         if current_user.role == 'teacher':
             return redirect(url_for('teacher_page'))
         if current_user.role == 'student':
             return redirect(url_for('student_page'))
+
+    if request.method == 'GET':
+        if not current_user.is_authenticated:
+            return render_template('register.html')
 
     if request.method == 'POST':
         data = request.get_json()
@@ -81,6 +84,7 @@ def register_page():
         role = data['role']
         name = data['name']
         familia = data['familia']
+        grade = data.get('grade', '')
 
         if load_user(username):
             return jsonify({'type': "IncorData", 'html': "Данный username уже занят"})
@@ -90,8 +94,10 @@ def register_page():
             return jsonify({'type': 'IncorData', 'html': "Некорректная роль"})
         if not (password and username and name and familia):
             return jsonify({'type': 'IncorData', 'html': "Заполните все поля"})
+        if not grade and role != 'teacher':
+            return jsonify({'type': 'IncorData', 'html': "Заполните все поля"})
 
-        insert_user(username, password, role, name, familia)
+        insert_user(username, password, role, name, familia, grade)
         user = load_user(username)
 
         login_user(user, remember=True)
@@ -139,6 +145,8 @@ def test_creation_page():
 @app.route('/teacher/test_stats/<test_id>', methods=['GET', 'POST'])
 @login_required
 def test_stats(test_id):
+    if not get_param_of_test(test_id):
+        return "No such test"
     if current_user.role != 'teacher':
         return "No permission"
     if get_creator_of_test(test_id) != current_user.username:
@@ -162,6 +170,8 @@ def test_stats(test_id):
 @app.route('/teacher/solution/<solution_id>', methods=['GET', 'POST'])
 @login_required
 def solution(solution_id):
+    if not get_info_of_solution(solution_id):
+        return "NO such solution"
     if current_user.role != 'teacher':
         return "NO PERMISSION"
     if get_creator_of_solution(solution_id) != current_user.username:
@@ -190,6 +200,8 @@ def solution(solution_id):
 @app.route('/teacher/test/<test_id>', methods=['GET', 'POST'])
 @login_required
 def teacher_test(test_id):
+    if not get_param_of_test(test_id):
+        return "No such test"
     if current_user.role != 'teacher':
         return "NO PERMISSION"
     if get_param_of_test(test_id)[1] != current_user.username:
@@ -233,13 +245,56 @@ def student_page():
         if req['type'] == 'load_test':
             test_id = req['id']
 
-            if student_already_passed_test(current_user.username, test_id):
+            if student_already_started_test(current_user.username, test_id):
                 return jsonify({'type': 'alreadyCompleted'})
 
             if not test_id_is_valid(test_id):
                 return jsonify({'type': 'nan'})
 
-            return jsonify({'type': 'success', 'url': '/student/test'})
+            return jsonify({'type': 'success', 'url': f'/student/test/{test_id}'})
+
+
+@app.route('/student/test/<test_id>', methods=['GET', 'POST'])
+@login_required
+def student_test(test_id):
+    if current_user.role != 'student':
+        return "No permission"
+    if not get_param_of_test(test_id):
+        return "No such test"
+
+    if request.method == 'GET':
+        add_test_to_started(current_user.username, test_id, datetime.now())
+        return render_template('test_for_student.html',
+                               name=f"{current_user.familia.capitalize()} {current_user.name[0].upper()}",
+                               test_name=get_param_of_test(test_id)[3],
+                               test_description=get_param_of_test(test_id)[4])
+
+    if request.method == 'POST':
+        req = request.get_json()
+        if req['type'] == 'get_test_info':
+            return jsonify({'type': 'success', 'test': get_param_of_test(test_id)[5], 'max_time': get_param_of_test(test_id)[6]})
+
+        if req['type'] == 'send_test':
+            if student_already_completed_test(current_user.username, test_id):
+                return jsonify({'type': 'error'})
+
+            time_now = datetime.now()
+
+            time_started = get_start_time(current_user.username, test_id)
+            time_started = datetime.strptime(time_started, '%Y-%m-%d %H:%M:%S')
+
+            time_for_solving = (time_now - time_started).total_seconds() / 60
+
+            cheated_chance = req['cheated_chance']
+            max_time = get_param_of_test(test_id)[6]
+
+            if time_for_solving > max_time + 1:
+                cheated_chance = 1
+
+            add_solution_to_db(current_user.username, test_id, json.dumps(req['test']), f'{time_for_solving} мин', cheated_chance)
+
+            return jsonify({'type': 'success', 'url': '/student'})
+
 
 
 app.run()

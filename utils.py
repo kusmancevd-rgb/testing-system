@@ -33,7 +33,8 @@ def load_solutions(test_id):
             'name': name,
             'score': f'{mark}/{mx_score}',
             'cheated': cheated_chance,
-            'time': time
+            'time': time,
+            'grade': student_data[5]
         })
 
     return result
