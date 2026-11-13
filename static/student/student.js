@@ -54,4 +54,46 @@ async function sendResponse() {
 }
 
 
+async function loadClassAssingments() {
+    let resp = await fetch('/student', {
+        method: "POST", 
+        body: JSON.stringify(
+            {'type': 'load_class_assignment'}
+            ),
+        headers: {
+        'Content-Type': 'application/json'
+        }, 
+    }
+    );
+    resp = await resp.json();
+
+    if (resp['type'] == 'success') {
+        let assignments = resp['assignments'];
+
+        renderAssignments(assignments);
+    }
+}
+
+
+function renderAssignments(assignments) {
+    let result = '';
+    if (assignments.length == 0) {
+        result = 'Вам пока не задали тестов'
+    } else {
+        for (let assignment of assignments) {
+            result += `
+                    <a href='/student/test/${assignment['test_id']}'>
+                    <div class='assignment'>
+                    <p>${assignment['test_name']}</p>
+                    <p>${assignment['test_description']}</p>
+                    </div>
+                    </a>`
+        } 
+    }
+
+    document.querySelector('.assignments').innerHTML = result;
+}
+
+
 document.querySelector('.input_test').addEventListener('submit', (event) => handleInput(event))
+loadClassAssingments();

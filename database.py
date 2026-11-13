@@ -16,7 +16,7 @@ def create_tables():
                        role     TEXT,
                        name     TEXT,
                        familia  TEXT,
-                       grade TEXT
+                       grade INTEGER REFERENCES class (id)
                    )
                    ''')
 
@@ -52,6 +52,24 @@ def create_tables():
                        test_id        INTEGER REFERENCES test (id),
                        student_id     TEXT REFERENCES user (username),
                        time TEXT
+                   )
+                   ''')
+
+    cursor.execute('''
+                   CREATE TABLE IF NOT EXISTS class
+                   (
+                       id         INTEGER PRIMARY KEY,
+                       teacher_id    TEXT REFERENCES user (username),
+                       name TEXT
+                   )
+                   ''')
+
+    cursor.execute('''
+                   CREATE TABLE IF NOT EXISTS class_assignment
+                   (
+                       id         INTEGER PRIMARY KEY,
+                       test_id TEXT REFERENCES test (id),
+                       class_id TEXT REFERENCES class (id)
                    )
                    ''')
 
@@ -216,3 +234,99 @@ def student_already_completed_test(username, test_id):
     conn.close()
 
     return len(res) > 0
+
+
+def class_already_exists_for_teacher(teacher_id, class_name):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    resp = cursor.execute('SELECT * FROM class WHERE teacher_id=? and name=?', (teacher_id, class_name)).fetchall()
+
+    conn.close()
+
+    return len(resp) >= 1
+
+
+def add_class_to_db(teacher_id, class_name):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    cursor.execute('INSERT INTO class (teacher_id, name) VALUES (?, ?)', (teacher_id, class_name))
+
+    conn.commit()
+    conn.close()
+
+
+def get_id_of_class(teacher_id, name):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    resp = cursor.execute('SELECT * FROM class WHERE teacher_id=? and name=?', (teacher_id, name)).fetchone()
+
+    conn.close()
+
+    return resp[0]
+
+
+def check_if_grade_exists(grade_id):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    resp = cursor.execute('SELECT * FROM class WHERE id=?', (grade_id, )).fetchall()
+
+    conn.close()
+
+    return len(resp) > 0
+
+
+def get_grade_name_by_id(grade_id):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    resp = cursor.execute('SELECT * FROM class WHERE id=?', (grade_id,)).fetchone()
+
+    conn.close()
+
+    return resp[2]
+
+
+def check_if_assignment_exists(test_id, class_id):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    res = cursor.execute('SELECT * FROM class_assignment WHERE test_id=? and class_id=?', (test_id, class_id)).fetchall()
+
+    conn.close()
+
+    return len(res) > 0
+
+
+def add_testAssignmentToClass_to_db(test_id, class_id):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    cursor.execute('INSERT INTO class_assignment (test_id, class_id) VALUES (?, ?)', (test_id, class_id))
+
+    conn.commit()
+    conn.close()
+
+
+def get_creator_of_class(class_id):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    res = cursor.execute('SELECT * FROM class WHERE id=?', (class_id, )).fetchone()
+
+    conn.close()
+
+    return res[1]
+
+
+def get_assignments(class_id):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    res = cursor.execute('SELECT * FROM class_assignment WHERE class_id=?', (class_id, )).fetchall()
+
+    conn.close()
+    return res

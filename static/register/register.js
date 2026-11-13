@@ -58,7 +58,7 @@ function changeRole(role) {
         }
         let oporni_elem = document.querySelector('.familia').nextElementSibling;
         oporni_elem.insertAdjacentHTML('afterend',
-            `<input class='class'>`
+            `<input class='class' value='Id класса'>`
         );
     }
 }

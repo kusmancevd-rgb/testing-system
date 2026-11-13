@@ -34,7 +34,7 @@ def load_solutions(test_id):
             'score': f'{mark}/{mx_score}',
             'cheated': cheated_chance,
             'time': time,
-            'grade': student_data[5]
+            'grade': get_grade_name_by_id(student_data[5])
         })
 
     return result
@@ -157,3 +157,30 @@ def get_param_of_test_created_by_username(username, *params):
             lst[i][params[j]] = resp[i][j]
 
     return lst
+
+
+def load_assignments(student_id, class_id):
+    '''
+    class_id -> [{test_name, test_description, test_id}, ...]
+    '''
+
+    assignments = get_assignments(class_id)
+
+    result = []
+
+    for assignment in assignments:
+        dct = {}
+        test_info = get_param_of_test(assignment[1])
+
+        test_id = assignment[1]
+        if student_already_started_test(student_id, test_id):
+            continue
+
+        dct['test_id'] = assignment[1]
+        dct['test_name'] = test_info[3]
+        dct['test_description'] = test_info[4]
+
+        result.append(dct)
+
+    print(result)
+    return result

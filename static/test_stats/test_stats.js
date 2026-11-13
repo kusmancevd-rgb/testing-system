@@ -95,5 +95,49 @@ function insertGrades() {
 }
 
 
+async function sendClassAssignment(event) {
+    event.preventDefault();
+    let class_id = document.querySelector('.class_id_input').value;
+
+    let resp = await fetch(
+        window.location.href,
+        {
+            method: 'POST',
+            body: JSON.stringify(
+                {'type': 'send_class_assignment',
+                 'class_id': class_id}
+                ),
+            headers: {
+                'Content-Type': 'application/json'
+        }
+        }
+    );
+
+    resp = await resp.json();
+
+    deleteMessageIfExists();
+
+    if (resp['type'] == 'incorData') {
+        document.querySelector('.class_id_form').insertAdjacentHTML('afterend', 
+            `<p class='message'>${resp['error_message']}</p>`
+        )
+    }
+
+    if (resp['type'] == 'success') {
+        document.querySelector('.class_id_form').insertAdjacentHTML('afterend', 
+            `<p class='message'>Классу с айди ${class_id} был задан этот тест</p>`);
+    }
+}
+
+
+function deleteMessageIfExists() {
+    let msg = document.querySelector('.message');
+    if (msg) {
+        msg.remove();
+    }
+}
+
+
 loadSolutions();
 document.querySelector('.grade').addEventListener('change', (event) => onGradeChange(event.target.value));
+document.querySelector('.class_id_form').addEventListener('submit', (event) => sendClassAssignment(event))
