@@ -5,7 +5,7 @@ from utils import *
 
 
 app = Flask(__name__)
-app.secret_key = 'ddsdsaddfsaddsdfssdcsddsdsassfdfsacfsfdsdsffsssdsfsdfssdssmmssdfdsvcbssgcdddgddddfoddsdccvc'
+app.secret_key = 'ddsdsaddfsadddssdfssdcsddsdsassfdfsacfsfdsdsffsssdsfsdfssdssmmssdfdsvcbssgcdddgddddfoddsdccvc'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -132,10 +132,11 @@ def register_page():
             return jsonify({'type': 'IncorData', 'html': "Некорректная роль"})
         if not (password and username and name and familia):
             return jsonify({'type': 'IncorData', 'html': "Заполните все поля"})
-        if not grade and role != 'teacher':
-            return jsonify({'type': 'IncorData', 'html': "Заполните все поля"})
-        if not check_if_grade_exists(grade):
-            return jsonify({'type': 'IncorData', 'html': "Класса с таким ID не существует"})
+        if role != 'teacher':
+            if not grade:
+                grade = 1
+            elif not check_if_grade_exists(grade):
+                return jsonify({'type': 'IncorData', 'html': "Класса с таким ID не существует"})
 
         insert_user(username, password, role, name, familia, grade)
         user = load_user(username)
@@ -295,6 +296,42 @@ def teacher_test(test_id):
             test_info = get_param_of_test(test_id)[5]
 
             return jsonify({'type': 'success', 'test': test_info})
+
+
+@app.route('/teacher/my_classes', methods=['GET', 'POST'])
+@login_required
+def my_classes():
+    if request.method == 'GET':
+        return render_template('my_classes.html',
+                               name=f"{current_user.familia.capitalize()} {current_user.name[0].upper()}")
+
+    if request.method == 'POST':
+        req = request.get_json()
+
+        if req['type'] == 'get_my_classes':
+            return jsonify({'type': 'success', 'classes': load_classes(current_user.username)})
+
+        if req['type'] == 'delete_class':
+            class_id = req['class_id']
+
+            if not check_if_grade_exists(class_id):
+                return jsonify({'type': 'error'})
+            if get_creator_of_class(class_id) != current_user.username:
+                return jsonify({'type': 'error'})
+
+            delete_class(class_id)
+
+            return jsonify({'type': 'success'})
+
+        if req['type'] == 'delete_user_from_class':
+            student_id = req['student_id']
+            class_id = req['class_id']
+            if get_creator_of_class(class_id) == current_user.username and int(get_user(student_id)[5]) == int(class_id):
+                remove_user_from_class(student_id)
+
+                return jsonify({'type': 'success'})
+
+            return jsonify({'type': 'error'})
 
 
 @app.route('/student', methods=['GET', 'POST'])

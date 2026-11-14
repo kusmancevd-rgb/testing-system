@@ -69,9 +69,15 @@ def create_tables():
                    (
                        id         INTEGER PRIMARY KEY,
                        test_id TEXT REFERENCES test (id),
-                       class_id TEXT REFERENCES class (id)
+                       class_id INTEGER REFERENCES class (id)
                    )
                    ''')
+
+    conn.commit()
+
+    cursor.execute("INSERT OR IGNORE INTO class (id, teacher_id, name) VALUES (1, 'admin', '---')")
+    cursor.execute("INSERT OR IGNORE INTO user (username, password, role, name, familia, grade)"
+                   " VALUES ('admin', 'AAAAAAAAAAAAA', 'teacher', '', '', '')")
 
     conn.commit()
     conn.close()
@@ -330,3 +336,47 @@ def get_assignments(class_id):
 
     conn.close()
     return res
+
+
+def get_classes_created_by_username(teacher_id):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    res = cursor.execute('SELECT * FROM class WHERE teacher_id=?', (teacher_id, )).fetchall()
+
+    conn.close()
+
+    return res
+
+
+def get_students_of_of_class(class_id):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    res = cursor.execute('SELECT * FROM user WHERE grade=?', (class_id, )).fetchall()
+
+    conn.close()
+
+    return res
+
+
+def delete_class(class_id):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    cursor.execute('DELETE FROM class WHERE id=?', (class_id,))
+    cursor.execute('DELETE FROM class_assignment WHERE class_id=?', (class_id, ))
+    cursor.execute('UPDATE user SET grade=1 WHERE grade=?', (class_id, ))
+
+    conn.commit()
+    conn.close()
+
+
+def remove_user_from_class(student_id):
+    conn = sqlite3.connect('db.sqlite3')
+    cursor = conn.cursor()
+
+    cursor.execute('UPDATE user SET grade=1 WHERE username=?', (student_id, ))
+
+    conn.commit()
+    conn.close()

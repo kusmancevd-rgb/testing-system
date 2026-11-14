@@ -184,3 +184,30 @@ def load_assignments(student_id, class_id):
 
     print(result)
     return result
+
+
+def load_classes(teacher_id):
+    all_classes = get_classes_created_by_username(teacher_id)
+
+    result = []
+
+    for classs in all_classes:
+        dct = {}
+
+        class_name = classs[2]
+        class_id = classs[0]
+        dct['class_name'] = class_name
+        dct['class_id'] = class_id
+        dct['students'] = []
+
+        all_students = get_students_of_of_class(classs[0])
+        for student in all_students:
+            dct['students'].append({'id': student[0],
+                                    'name': student[3],
+                                    'familia': student[4]}
+                                   )
+
+        result.append(dct)
+
+    return result
+
