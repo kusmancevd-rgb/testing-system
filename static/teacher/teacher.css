@@ -15,7 +15,7 @@ body {
     min-height: 100vh;
     color: #2c3e50;
     font-size: 15px;
-    
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -47,12 +47,12 @@ body {
 }
 
 /* ---------- Общие настройки ширины для контента ---------- */
-body > p, 
-.create_test, 
+body > p,
+.create_test,
 .test_input, /* Добавили поле ввода в общую ширину */
 .my_tests {
     width: 100%;
-    max-width: 820px; 
+    max-width: 820px;
 }
 
 /* ---------- Приветствие ---------- */
@@ -77,7 +77,7 @@ body > p:last-of-type {
 .create_test {
     display: block;
     width: auto;
-    align-self: center; 
+    align-self: center;
     padding: 12px 32px;
     font-family: inherit;
     font-size: 15px;
@@ -204,4 +204,110 @@ body > p:last-of-type {
     .my_tests > a > div {
         padding: 16px 20px;
     }
+}
+
+/* ---------- Кнопка "Создать класс" ---------- */
+.create_class {
+    padding: 12px 32px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(180deg, #6aa9e0 0%, #4f92cf 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(79, 146, 207, 0.4);
+    transition: all 0.2s ease;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+.create_class:hover {
+    background: linear-gradient(180deg, #5d9dd8 0%, #4285c2 100%);
+}
+
+/* ---------- Форма создания класса (внутри .grade) ---------- */
+.grade {
+    width: 100%;
+    max-width: 820px;
+    margin-top: 10px;
+}
+.grade input.class_name {
+    width: 100%;
+    padding: 12px 16px;
+    font-family: inherit;
+    font-size: 15px;
+    background: #ffffff;
+    border: 1.5px solid #dbe3ec;
+    border-radius: 8px;
+    outline: none;
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+}
+.grade input.class_name:focus {
+    border-color: #5b9bd5;
+    box-shadow: 0 0 0 3px rgba(91, 155, 213, 0.18);
+}
+.grade button.submit_class {
+    padding: 10px 24px;
+    font-weight: 600;
+    color: #ffffff;
+    background: #4f92cf;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* ---------- Сообщения ---------- */
+.success_message {
+    color: #1d6f42;
+    background: #e6f7eb;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid #b7e4c7;
+    margin-top: 10px;
+    font-size: 14px;
+}
+.error_message {
+    color: #c0392b;
+    background: #fdecea;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid #f3c1bb;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* ---------- Ссылка-кнопка "Управление классами" ---------- */
+.class_control {
+    display: inline-block;
+    padding: 12px 32px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: #4f92cf;
+    text-decoration: none;
+    background: #ffffff;
+    border: 2px solid #4f92cf;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(79, 146, 207, 0.15);
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.class_control:hover {
+    background: #eaf1f9;
+    box-shadow: 0 5px 16px rgba(79, 146, 207, 0.3);
+}
+
+.class_control:active {
+    transform: translateY(1px) scale(0.99);
+    box-shadow: 0 1px 3px rgba(79, 146, 207, 0.2);
+}
+
+.class_control:focus-visible {
+    outline: 3px solid rgba(79, 146, 207, 0.4);
+    outline-offset: 2px;
 }
